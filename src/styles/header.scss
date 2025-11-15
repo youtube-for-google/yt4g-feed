@@ -1,0 +1,64 @@
+@use "sass:color";
+@use "./variables" as *;
+@use "./mixins" as *;
+
+.header {
+  @include flex-row($gap: 1rem);
+  justify-content: space-between;
+  align-items: center;
+  padding: $spacing-md $spacing-lg;
+  background: $color-surface;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+
+  .logo {
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+    font-size: 1.2rem;
+    color: $color-accent;
+
+    span {
+      margin-left: 0.5rem;
+      color: $color-text;
+    }
+  }
+
+  .searchbar {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+
+    form {
+      width: 60%;
+      display: flex;
+      align-items: center;
+      background: $color-bg;
+      border-radius: $border-radius;
+      overflow: hidden;
+      border: 1px solid color.adjust($color-surface, $lightness: 10%);
+
+      input {
+        width: 100%;
+        padding: 0.4rem 0.6rem;
+        background: transparent;
+        border: none;
+        color: $color-text;
+        font-size: 0.95rem;
+        &:focus {
+          outline: none;
+        }
+      }
+
+      button {
+        background: $color-accent;
+        border: none;
+        color: #fff;
+        padding: 0.4rem 0.8rem;
+        cursor: pointer;
+      }
+    }
+  }
+}
