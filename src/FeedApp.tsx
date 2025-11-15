@@ -1,88 +1,68 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { Trie } from "./utils/searchTrie";
 import HeaderBar from "./components/HeaderBar";
-import { getTopKTrending, VideoItem } from "./utils/topKTrending";
+import { getTopKTrending } from "./utils/topKTrending";
 import TrendingRow from "./components/TrendingRow";
+
+import { useQuery } from "@apollo/client/react";
+import { GET_VIDEOS } from "./graphql/queries";
 
 import "./styles/main.scss";
 
-const videos: VideoItem[] = [
-  {
-    id: 1,
-    title: "Building Microfrontends",
-    views: 54200,
-    cat: "Tech",
-    channel: "Praveen Codes",
-    thumb: "https://placehold.co/320x180/202020/FFF?text=Thumb+1",
-  },
-  {
-    id: 2,
-    title: "Heap Sort In Action",
-    views: 209000,
-    cat: "Tech",
-    channel: "Algo Lab",
-    thumb: "https://placehold.co/320x180/202020/FFF?text=Thumb+2",
-  },
-  {
-    id: 3,
-    title: "Lo-Fi Beats Playlist",
-    views: 380000,
-    cat: "Music",
-    channel: "Zen Beats",
-    thumb: "https://placehold.co/320x180/202020/FFF?text=Thumb+3",
-  },
-  {
-    id: 4,
-    title: "Intro to OpenTelemetry",
-    views: 33800,
-    cat: "Tech",
-    channel: "Cloud Insights",
-    thumb: "https://placehold.co/320x180/202020/FFF?text=Thumb+4",
-  },
-  {
-    id: 5,
-    title: "Game AI Evolution",
-    views: 520000,
-    cat: "Gaming",
-    channel: "Next Gen AI",
-    thumb: "https://placehold.co/320x180/202020/FFF?text=Thumb+5",
-  },
-];
-
-const trending = getTopKTrending(videos, 5);
+interface GetVideosResponse {
+  videos: {
+    id: number;
+    title: string;
+    channel: string;
+    views: number;
+    cat: string;
+    thumbnail: string;
+  }[];
+}
 
 export default function FeedApp() {
-  // build trie once
+  const { loading, error, data } = useQuery<GetVideosResponse>(GET_VIDEOS);
+
+  // Memoize derived video list
+  const videoList = useMemo(() => data?.videos ?? [], [data]);
+
+  const [filtered, setFiltered] = useState(videoList);
+
+  // rebuild trie whenever the actual list changes
   const trie = useMemo(() => {
     const t = new Trie();
-    videos.forEach((v) => t.insert(v.title));
+    videoList.forEach((v) => t.insert(v.title));
     return t;
-  }, [videos]);
+  }, [videoList]);
 
-  const [filtered, setFiltered] = useState(videos);
+  useEffect(() => {
+    setFiltered(videoList);
+  }, [videoList]);
 
   const handleSearch = (query: string) => {
     if (!query) {
-      setFiltered(videos);
+      setFiltered(videoList);
       return;
     }
     const matches = trie.searchPrefix(query);
-    const newList = videos.filter((v) =>
+    const newList = videoList.filter((v) =>
       matches.some((m) => v.title.toLowerCase() === m)
     );
     setFiltered(newList);
   };
 
+  if (loading) return <p>Loading videos...</p>;
+  if (error) return <p>Error loading videos: {error.message}</p>;
+
   return (
     <div className="feed-container">
       <HeaderBar onSearch={handleSearch} />
       <div className="feed-body">
-        <TrendingRow data={trending} />
-
+        <TrendingRow data={getTopKTrending(videoList, 5)} />
         <section className="feed-grid">
           {filtered.map((v) => (
             <article key={v.id} className="card">
-              <img src={v.thumb} alt={v.title} className="thumb" />
+              <img src={v.thumbnail} alt={v.title} className="thumb" />
               <h3>{v.title}</h3>
               <p className="meta">
                 {v.channel} • {v.views.toLocaleString()} views
