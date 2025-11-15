@@ -43,7 +43,6 @@ class MinHeap<T> {
 
   private bubbleDown() {
     let idx = 0;
-    const element = this.data[0];
     const length = this.data.length;
 
     while (true) {
@@ -75,7 +74,7 @@ class MinHeap<T> {
 }
 
 export interface VideoItem {
-  id: number;
+  id: string;
   title: string;
   views: number;
   cat: string;

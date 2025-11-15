@@ -12,3 +12,22 @@ export const GET_VIDEOS = gql`
     }
   }
 `;
+
+export const GET_COMMENTS = gql`
+  query GetComments($videoId: ID!) {
+    comments(videoId: $videoId) {
+      id
+      text
+      author {
+        name
+        avatar
+      }
+    }
+  }
+`;
+
+export const GET_LIKES = gql`
+  query GetLikes($videoId: ID!) {
+    likes(videoId: $videoId)
+  }
+`;

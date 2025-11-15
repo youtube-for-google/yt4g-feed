@@ -3,6 +3,8 @@ import { Trie } from "./utils/searchTrie";
 import HeaderBar from "./components/HeaderBar";
 import { getTopKTrending } from "./utils/topKTrending";
 import TrendingRow from "./components/TrendingRow";
+import LikeButton from "./components/LikeButton";
+import CommentsSection from "./components/CommentsSection";
 
 import { useQuery } from "@apollo/client/react";
 import { GET_VIDEOS } from "./graphql/queries";
@@ -11,7 +13,7 @@ import "./styles/main.scss";
 
 interface GetVideosResponse {
   videos: {
-    id: number;
+    id: string;
     title: string;
     channel: string;
     views: number;
@@ -65,6 +67,11 @@ export default function FeedApp() {
               <img src={v.thumbnail} alt={v.title} className="thumb" />
               <h3>{v.title}</h3>
               <p className="meta">
+                <LikeButton videoId={v.id} userId={"UserID placeholder"} />
+                <CommentsSection
+                  videoId={v.id}
+                  authorId={"UserID placeholder"}
+                />
                 {v.channel} • {v.views.toLocaleString()} views
               </p>
             </article>
