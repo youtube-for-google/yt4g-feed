@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Trie } from "./utils/searchTrie";
 import HeaderBar from "./components/HeaderBar";
 import { getTopKTrending } from "./utils/topKTrending";

@@ -1,4 +1,3 @@
-import React from "react";
 import { VideoItem } from "../utils/topKTrending";
 import "../styles/trending.scss";
 

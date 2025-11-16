@@ -1,4 +1,3 @@
-import React from "react";
 import { useQuery, useMutation } from "@apollo/client/react";
 import { GET_LIKES } from "../graphql/queries";
 import { LIKE_VIDEO } from "../graphql/mutations";

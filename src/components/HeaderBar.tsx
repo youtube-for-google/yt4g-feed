@@ -1,4 +1,3 @@
-import React from "react";
 import "../styles/header.scss";
 import SearchBar from "./SearchBar";
 
